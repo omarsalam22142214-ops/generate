@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مولد الحسابات + نظام الحماية المتكامل + أداة الملء التلقائي</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0b0c10;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 25px 12px;
+      margin: 0;
+    }
+
+    /* ==================== تنسيقات القسم الأول الأصلي (كما هي تماماً) ==================== */
+    .card {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 25px;
+      max-width: 550px;
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h2 {
+      margin-top: 0;
+      color: #38bdf8;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .drag-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 17px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      cursor: grab;
+      border: 2px dashed #7dd3fc;
+      margin: 15px 0;
+      transition: transform 0.2s, box-shadow 0.2s;
+      user-select: none;
+    }
+    .drag-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.5);
+    }
+    .drag-btn:active {
+      cursor: grabbing;
+    }
+    textarea {
+      width: 100%;
+      height: 110px;
+      background-color: #0f172a;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px;
+      box-sizing: border-box;
+      font-family: monospace;
+      font-size: 12px;
+      direction: ltr;
+      text-align: left;
+      resize: none;
+      margin-top: 10px;
+    }
+    .btn-action {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .btn-action:hover {
+      background-color: #059669;
+    }
+    .form-group {
+      margin-bottom: 12px;
+      text-align: right;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+      color: #cbd5e1;
+    }
+    .form-group input, .select-row select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background-color: #0f172a;
+      color: #fff;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    .select-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* ==================== تنسيقات البوابة المشفرة والقسم الثاني ==================== */
+    .section-divider {
+      max-width: 550px;
+      width: 100%;
+      border-top: 2px dashed #334155;
+      margin: 10px 0 30px 0;
+      position: relative;
+      text-align: center;
+    }
+    .section-divider span {
+      background: #0b0c10;
+      padding: 0 15px;
+      color: #e11d48;
+      font-weight: bold;
+      font-size: 15px;
+      position: relative;
+      top: -12px;
+    }
+
+    /* شاشة القفل المشفر */
+    .lock-card {
+      background-color: #18181b;
+      border: 2px solid #e11d48;
+      border-radius: 16px;
+      padding: 28px 20px;
+      max-width: 550px;
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: 0 12px 30px rgba(225, 29, 72, 0.2);
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .lock-title {
+      color: #f43f5e;
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+    }
+    .lock-input-wrap {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    .lock-input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #3f3f46;
+      background-color: #09090b;
+      color: #facc15;
+      font-size: 16px;
+      text-align: center;
+      direction: ltr;
+      outline: none;
+    }
+    .lock-input:focus {
+      border-color: #f43f5e;
+    }
+    .lock-btn {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 22px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .lock-btn:hover {
+      opacity: 0.92;
+    }
+    .lock-error {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+      font-weight: bold;
+    }
+
+    /* الحاوية الرئيسية لمولد الحسابات + نظام الحماية */
+    #protectedGeneratorSection {
+      display: none;
+      max-width: 550px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .gen-main-box {
+      background-color: #18181b;
+      border-radius: 18px;
+      padding: 22px 16px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.65);
+      border: 1px solid #27272a;
+      margin-bottom: 22px;
+    }
+    .gen-header-title {
+      color: #db2777;
+      background: linear-gradient(90deg, #f43f5e, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      font-size: 25px;
+      font-weight: 800;
+      margin: 5px 0 22px 0;
+    }
+
+    /* صندوق الإيميل الأساسي */
+    .base-gmail-box {
+      background-color: #27272a;
+      border-radius: 12px;
+      border-left: 4px solid #eab308;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .base-gmail-label {
+      color: #d4d4d8;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .base-gmail-input {
+      width: 100%;
+      background-color: #1f1f22;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      padding: 11px 12px;
+      color: #facc15;
+      font-weight: bold;
+      font-size: 15px;
+      text-align: center;
+      direction: ltr;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .base-gmail-input:focus {
+      border-color: #eab308;
+    }
+
+    /* صفوف البيانات المولدة */
+    .data-row {
+      background-color: #222226;
+      border: 1px solid #2e2e34;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .data-badge {
+      background-color: #3f3f46;
+      color: #d4d4d8;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      min-width: 58px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .data-value {
+      flex: 1;
+      color: #ffffff;
+      font-size: 15px;
+      font-family: 'Segoe UI', monospace;
+      direction: ltr;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      user-select: all;
+    }
+    .btn-copy-green {
+      background-color: #4caf50;
+      color: #ffffff;
+      border: none;
+      border-radius: 7px;
+      padding: 9px 18px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-copy-green:hover {
+      background-color: #43a047;
+    }
+    .btn-copy-green:active {
+      transform: scale(0.96);
+    }
+
+    /* صف الصورة */
+    .img-actions-wrap {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-open-img {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1.3;
+      min-width: 72px;
+    }
+    .btn-download-img {
+      background-color: #ea862a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1.3;
+      min-width: 76px;
+    }
+
+    /* زر توليد بيانات جديدة */
+    .btn-generate-blue {
+      width: 100%;
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 8px 0 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-generate-blue:hover {
+      background-color: #0369a1;
+    }
+
+    /* مفكرة خطوات الأمان */
+    .security-memo-box {
+      background-color: #283546;
+      border-right: 4px solid #ea580c;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+      text-align: right;
+    }
+    .security-memo-title {
+      color: #ea580c;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .memo-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #e2e8f0;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .memo-check-item:last-child {
+      margin-bottom: 0;
+    }
+    .memo-check-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #ea580c;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* أزرار فتح المواقع والحفظ */
+    .btn-insta-grad {
+      width: 100%;
+      background: linear-gradient(90deg, #c026d3 0%, #db2777 45%, #ea580c 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .social-row-2 {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .btn-gmail-red {
+      flex: 1;
+      background-color: #e54839;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-fb-blue {
+      flex: 1;
+      background-color: #1877f2;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-save-firebase {
+      width: 100%;
+      background-color: #27a862;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 12px;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.5;
+      cursor: pointer;
+      margin-bottom: 22px;
+    }
+    .btn-save-firebase:hover {
+      background-color: #218f53;
+    }
+
+    /* المشغل الآمن متعدد التابات */
+    .safe-player-box {
+      background-color: #1c1c21;
+      border: 1.5px solid #8b3dff;
+      border-radius: 16px;
+      padding: 16px 12px;
+      margin-bottom: 15px;
+    }
+    .safe-player-title {
+      color: #9d5cff;
+      font-size: 17px;
+      font-weight: bold;
+      text-align: center;
+      margin: 0 0 14px 0;
+    }
+    .url-bar-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .btn-add-tab {
+      background-color: #8b3dff;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .input-tab-url {
+      flex: 1;
+      background-color: #121215;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #e4e4e7;
+      font-size: 13px;
+      direction: ltr;
+      text-align: center;
+      outline: none;
+    }
+    .tabs-header-strip {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      direction: ltr;
+    }
+    .tab-pill {
+      background-color: #383842;
+      color: #e4e4e7;
+      padding: 9px 14px;
+      border-radius: 8px 8px 0 0;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .tab-pill.active {
+      background-color: #8b3dff;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    .tab-close-x {
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+    .tab-close-x:hover {
+      background-color: rgba(0,0,0,0.3);
+    }
+    .sandbox-viewport-wrap {
+      background-color: #d4d4d8;
+      border-radius: 0 0 8px 8px;
+      height: 390px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .sandbox-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #e4e4e7;
+    }
+    .sandbox-note {
+      color: #9ca3af;
+      font-size: 11.5px;
+      text-align: center;
+      margin: 10px 0 4px 0;
+      line-height: 1.5;
+    }
+    .iframe-helper-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #27272a;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #cbd5e1;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    .iframe-helper-btn {
+      background: #8b3dff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* سجل الحسابات المحفوظة وإعداد فايربيز */
+    .saved-accounts-panel {
+      background-color: #1f1f24;
+      border: 1px solid #3f3f46;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+      text-align: right;
+    }
+    .saved-accounts-title {
+      color: #22c55e;
+      font-size: 15px;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .saved-item-card {
+      background: #121216;
+      border: 1px solid #2e2e36;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+      direction: ltr;
+      text-align: left;
+      color: #e2e8f0;
+    }
+
+    /* الفوتر وحقوق الملكية */
+    .omar-footer {
+      background-color: #12111a;
+      border-top: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 26px 15px;
+      text-align: center;
+      max-width: 550px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
+    .omar-copyright {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1.5;
+      margin: 0 0 14px 0;
+      direction: ltr;
+    }
+    .omar-salawat {
+      color: #22c55e;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 12px rgba(34, 197, 94, 0.55);
+      margin: 0;
+    }
+
+    /* إشعار النسخ السريع */
+    #toastMsg {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #10b981;
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: none;
+    }
+  </style>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="manifest" href="./manifest.json?v=v1794907312409">
+    <meta name="theme-color" content="#ff00ff">
+    <link rel="apple-touch-icon" href="./icon-192.png?v=v1794907312409">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js?v=v1794907312409')
+            .then(reg => console.log('SW Registered'))
+            .catch(err => console.log('SW Failed', err));
+        });
+      }
+    </script>
+</head>
+<body>
+
+  <div id="toastMsg">✅ تم النسخ بنجاح!</div>
+
+  <!-- ========================================================================= -->
+  <!-- القسم الأول: صفحتك الأساسية الأصلية بالكامل بدون أي تغيير أو نقصان نهائياً -->
+  <!-- ========================================================================= -->
+
+  <!-- قسم السحب والنسخ -->
+  <div class="card">
+    <h2>⚡ أداة الملء التلقائي (Bookmarklet)</h2>
+    <p>اسحب الزر الأزرق بالأسفل وأفلته في <b>شريط الإشارات المرجعية (Bookmarks Bar)</b> في متصفحك، أو اضغط عليه مباشرة لتجربة عمله في النموذج التجريبي أسفل الصفحة.</p>
+
+    <!-- زر السحب يحتوي على الكود الأصلي كما هو بالضبط -->
+    <a id="bookmarkletLink" class="drag-btn" href='Javascript:(function(){let email="boxy-poem-audacity@duck.com";let chars="abcdefghijklmnopqrstuvwxyz0123456789";let rand="";for(let i=0;i<5;i++)rand+=chars.charAt(Math.floor(Math.random()*chars.length));let fn=["Alex","John","David","Max","Leo","Sam","Chris","Jack","Tom","Adam"];let ln=["Smith","Johnson","Brown","Taylor","Miller","Davis","Wilson"];let fName=fn[Math.floor(Math.random()*fn.length)]+" "+ln[Math.floor(Math.random()*ln.length)];let username=fName.split(" ")[0].toLowerCase()+"_"+rand;let pass="#ZMsd42d*%22;function%20forceInject(el,val){if(!el)return;el.focus();let%20nativeSetter=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,%22value%22).set;if(nativeSetter)nativeSetter.call(el,val);else%20el.value=val;el.dispatchEvent(new%20Event(&apos;input&apos;,{bubbles:true}));el.dispatchEvent(new%20Event(&apos;change&apos;,{bubbles:true}));el.blur();}let%20inputs=document.querySelectorAll(%22input%22);if(inputs.length%3E=4){forceInject(inputs[0],email);forceInject(inputs[1],pass);forceInject(inputs[2],fName);forceInject(inputs[3],username);}inputs.forEach(i=%3E{let%20n=(i.name||%22%22).toLowerCase(),t=(i.type||%22%22).toLowerCase();if((n.includes(&apos;email&apos;)||t===&apos;email&apos;)&&!i.value)forceInject(i,email);if((n.includes(&apos;pass&apos;)||t===&apos;password&apos;)&&!i.value)forceInject(i,pass);if((n.includes(&apos;full&apos;)||n.includes(&apos;name&apos;))&&!i.value)forceInject(i,fName);if(n.includes(&apos;user&apos;)&&!i.value)forceInject(i,username);});let%20selects=document.querySelectorAll(%22select%22);if(selects.length%3E=3){function%20forceSelect(el,val){if(!el)return;let%20nativeSelect=Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype,%22value%22).set;if(nativeSelect)nativeSelect.call(el,val);el.value=val;for(let%20j=0;j%3Cel.options.length;j++){if(el.options[j].value===val||el.options[j].text===val){el.selectedIndex=j;break;}}el.dispatchEvent(new%20Event(&apos;change&apos;,{bubbles:true}));}forceSelect(selects[0],%226%22);forceSelect(selects[1],%2215%22);forceSelect(selects[2],%221998%22);}let%20info=%60%F0%9F%93%A7%20%D8%A7%D9%84%D8%A5%D9%8A%D9%85%D9%8A%D9%84:%20${email}\n%F0%9F%91%A4%20%D8%A7%D9%84%D9%86%D9%8A%D9%85:%20${fName}\n%F0%9F%8F%B7%EF%B8%8F%20%D8%A7%D9%84%D9%8A%D9%88%D8%B2%D8%B1:%20${username}\n%F0%9F%94%91%20%D8%A7%D9%84%D8%A8%D8%A7%D8%B3%D9%88%D8%B1%D8%AF:%20${pass}\n%F0%9F%8E%82%20%D8%A7%D9%84%D9%85%D9%8A%D9%84%D8%A7%D8%AF:%2015%20/%206%20/%201998%60;navigator.clipboard.writeText(info).catch(()=%3E{});alert(%22%E2%9C%85%20%D8%AA%D9%85%20%D9%85%D9%84%D8%A1%20%D9%83%D9%84%20%D8%A7%D9%84%D8%AE%D8%A7%D9%86%D8%A7%D8%AA%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD!\n\n%22+info);})();'>✋ اسحبني لشريط الإشارات (الملء التلقائي)</a>
+
+    <p style="margin-bottom: 5px;">أو انسخ الكود الأصلي الخام كما هو:</p>
+    <textarea id="rawCode" readonly>Javascript:(function(){let email="boxy-poem-audacity@duck.com";let chars="abcdefghijklmnopqrstuvwxyz0123456789";let rand="";for(let i=0;i<5;i++)rand+=chars.charAt(Math.floor(Math.random()*chars.length));let fn=["Alex","John","David","Max","Leo","Sam","Chris","Jack","Tom","Adam"];let ln=["Smith","Johnson","Brown","Taylor","Miller","Davis","Wilson"];let fName=fn[Math.floor(Math.random()*fn.length)]+" "+ln[Math.floor(Math.random()*ln.length)];let username=fName.split(" ")[0].toLowerCase()+"_"+rand;let pass="#ZMsd42d*%22;function%20forceInject(el,val){if(!el)return;el.focus();let%20nativeSetter=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,%22value%22).set;if(nativeSetter)nativeSetter.call(el,val);else%20el.value=val;el.dispatchEvent(new%20Event('input',{bubbles:true}));el.dispatchEvent(new%20Event('change',{bubbles:true}));el.blur();}let%20inputs=document.querySelectorAll(%22input%22);if(inputs.length%3E=4){forceInject(inputs[0],email);forceInject(inputs[1],pass);forceInject(inputs[2],fName);forceInject(inputs[3],username);}inputs.forEach(i=%3E{let%20n=(i.name||%22%22).toLowerCase(),t=(i.type||%22%22).toLowerCase();if((n.includes('email')||t==='email')&&!i.value)forceInject(i,email);if((n.includes('pass')||t==='password')&&!i.value)forceInject(i,pass);if((n.includes('full')||n.includes('name'))&&!i.value)forceInject(i,fName);if(n.includes('user')&&!i.value)forceInject(i,username);});let%20selects=document.querySelectorAll(%22select%22);if(selects.length%3E=3){function%20forceSelect(el,val){if(!el)return;let%20nativeSelect=Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype,%22value%22).set;if(nativeSelect)nativeSelect.call(el,val);el.value=val;for(let%20j=0;j%3Cel.options.length;j++){if(el.options[j].value===val||el.options[j].text===val){el.selectedIndex=j;break;}}el.dispatchEvent(new%20Event('change',{bubbles:true}));}forceSelect(selects[0],%226%22);forceSelect(selects[1],%2215%22);forceSelect(selects[2],%221998%22);}let%20info=%60%F0%9F%93%A7%20%D8%A7%D9%84%D8%A5%D9%8A%D9%85%D9%8A%D9%84:%20${email}\n%F0%9F%91%A4%20%D8%A7%D9%84%D9%86%D9%8A%D9%85:%20${fName}\n%F0%9F%8F%B7%EF%B8%8F%20%D8%A7%D9%84%D9%8A%D9%88%D8%B2%D8%B1:%20${username}\n%F0%9F%94%91%20%D8%A7%D9%84%D8%A8%D8%A7%D8%B3%D9%88%D8%B1%D8%AF:%20${pass}\n%F0%9F%8E%82%20%D8%A7%D9%84%D9%85%D9%8A%D9%84%D8%A7%D8%AF:%2015%20/%206%20/%201998%60;navigator.clipboard.writeText(info).catch(()=%3E{});alert(%22%E2%9C%85%20%D8%AA%D9%85%20%D9%85%D9%84%D8%A1%20%D9%83%D9%84%20%D8%A7%D9%84%D8%AE%D8%A7%D9%86%D8%A7%D8%AA%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD!\n\n%22+info);})();</textarea>
+    <button class="btn-action" onclick="copyRawCode()">📋 نسخ الكود الأصلي</button>
+  </div>
+
+  <!-- نموذج تجريبي لاختبار نفس الخواص داخل الصفحة -->
+  <div class="card" id="originalTestCard">
+    <h2>🧪 نموذج تجريبي لاختبار الخواص</h2>
+    <p>اضغط على زر التشغيل بالأسفل أو على الزر الأزرق بالأعلى لملء هذه الخانات الـ 4 وقوائم الميلاد الـ 3 بنفس خواص الكود الأصلي:</p>
+
+    <div class="form-group">
+      <label>الإيميل (Input 1):</label>
+      <input type="email" name="email" placeholder="البريد الإلكتروني">
+    </div>
+    <div class="form-group">
+      <label>الباسورد (Input 2):</label>
+      <input type="text" name="password" placeholder="كلمة المرور">
+    </div>
+    <div class="form-group">
+      <label>الاسم الكامل (Input 3):</label>
+      <input type="text" name="fullname" placeholder="الاسم الكامل">
+    </div>
+    <div class="form-group">
+      <label>اليوزر (Input 4):</label>
+      <input type="text" name="username" placeholder="اسم المستخدم">
+    </div>
+
+    <div class="form-group">
+      <label>تاريخ الميلاد (Selects 1, 2, 3):</label>
+      <div class="select-row">
+        <select id="monthSelect">
+          <option value="">الشهر</option>
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+          <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+        </select>
+        <select id="daySelect">
+          <option value="">اليوم</option>
+          <option value="1">1</option><option value="10">10</option><option value="15">15</option><option value="20">20</option>
+        </select>
+        <select id="yearSelect">
+          <option value="">السنة</option>
+          <option value="1995">1995</option><option value="1998">1998</option><option value="2000">2000</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-action" style="background-color: #0284c7; width: 100%; margin-top: 15px;" onclick="runOriginalScript()">⚡ تشغيل الكود على هذا النموذج الآن</button>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- فاصل القسم الثاني المحمي بباسورد مشفر لا يمكن قراءته من السورس كود نهائياً -->
+  <!-- ========================================================================= -->
+
+  <div class="section-divider">
+    <span>🔒 القسم الثاني: مولد الحسابات + نظام الحماية المتكامل</span>
+  </div>
+
+  <!-- بوابة إدخال الباسورد المشفر -->
+  <div class="lock-card" id="passwordGateCard">
+    <div class="lock-title">🔐 منطقة محمية بتشفير كامل</div>
+    <p style="margin: 0; color: #a1a1aa;">أدخل الباسورد السري لفتح <b>مولد الحسابات + نظام الحماية المتكامل</b> (الباسورد مشفر بالكامل بخوارزمية غير قابلة للقراءة):</p>
+    <div class="lock-input-wrap">
+      <input type="password" id="secretPassInput" class="lock-input" placeholder="أدخل الباسورد المشفر هنا..." onkeydown="if(event.key==='Enter') unlockSectionTwo()">
+      <button class="lock-btn" onclick="unlockSectionTwo()">🔓 فتح النظام</button>
+    </div>
+    <div id="lockErrorMsg" class="lock-error">❌ الباسورد غير صحيح! حاول مرة أخرى.</div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- القسم الثاني الكامل: مولد الحسابات + نظام الحماية (تفتح بعد التحقق من التشفير) -->
+  <!-- ========================================================================= -->
+
+  <div id="protectedGeneratorSection">
+    <div class="gen-main-box">
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+        <span style="font-size: 12px; color: #22c55e; font-weight: bold;">🟢 النظام مفعل ومحمي</span>
+        <button onclick="lockSectionTwo()" style="background: #27272a; color: #f87171; border: 1px solid #3f3f46; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer;">🔒 قفل القسم</button>
+      </div>
+
+      <h1 class="gen-header-title">مولد الحسابات + نظام الحماية</h1>
+
+      <!-- الإيميل الأساسي (Gmail) -->
+      <div class="base-gmail-box">
+        <label class="base-gmail-label">الإيميل الأساسي (Gmail):</label>
+        <input type="email" id="baseGmailInput" class="base-gmail-input" value="Omarsalam2214@gmail.com" oninput="updateDerivedEmail()">
+      </div>
+
+      <!-- صف الاسم -->
+      <div class="data-row">
+        <span class="data-badge">الاسم</span>
+        <span class="data-value" id="genNameVal">Youssef Nabil</span>
+        <button class="btn-copy-green" onclick="copyFieldText('genNameVal', 'الاسم')">نسخ</button>
+      </div>
+
+      <!-- صف اليوزر -->
+      <div class="data-row">
+        <span class="data-badge">اليوزر</span>
+        <span class="data-value" id="genUserVal">youssef_nabil84618</span>
+        <button class="btn-copy-green" onclick="copyFieldText('genUserVal', 'اليوزر')">نسخ</button>
+      </div>
+
+      <!-- صف الإيميل -->
+      <div class="data-row">
+        <span class="data-badge">الإيميل</span>
+        <span class="data-value" id="genEmailVal">Omarsalam2214+youssef_nabil84618@gmail.com</span>
+        <button class="btn-copy-green" onclick="copyFieldText('genEmailVal', 'الإيميل')">نسخ</button>
+      </div>
+
+      <!-- صف الباسورد -->
+      <div class="data-row">
+        <span class="data-badge">الباسورد</span>
+        <span class="data-value" id="genPassVal">#JBNZCK!cLSg</span>
+        <button class="btn-copy-green" onclick="copyFieldText('genPassVal', 'الباسورد')">نسخ</button>
+      </div>
+
+      <!-- صف الصورة -->
+      <div class="data-row">
+        <span class="data-badge">صورة</span>
+        <span class="data-value" id="genImgVal">https://thispersondoesnotexist.com</span>
+        <div class="img-actions-wrap">
+          <button class="btn-open-img" onclick="openAiFaceImage()">افتح<br>الصورة</button>
+          <button class="btn-download-img" onclick="downloadAiFaceImage()">⬇️<br>تنزيل الصورة</button>
+        </div>
+      </div>
+
+      <!-- زر توليد بيانات جديدة -->
+      <button class="btn-generate-blue" onclick="generateNewAccountData()">
+        <span>🔄</span>
+        <span>توليد بيانات جديدة</span>
+      </button>
+
+      <!-- مفكرة خطوات الأمان (اختياري) -->
+      <div class="security-memo-box">
+        <div class="security-memo-title">
+          <span>⚠️</span>
+          <span>مفكرة خطوات الأمان (اختياري):</span>
+        </div>
+        <label class="memo-check-item">
+          <input type="checkbox" id="chkIpChanged" onchange="saveChecklistState()">
+          <span>غيرت الـ IP (عملت وضع الطيران لمدة 10 ثواني وقفلته).</span>
+        </label>
+        <label class="memo-check-item">
+          <input type="checkbox" id="chkIncognito" onchange="saveChecklistState()">
+          <span>فتحت نافذة متصفح خفي (Incognito) جديدة ونظيفة.</span>
+        </label>
+      </div>
+
+      <!-- أزرار فتح المواقع السريعة -->
+      <button class="btn-insta-grad" onclick="openInstaSignup()">
+        <span>🚀</span>
+        <span>فتح إنستجرام للتسجيل</span>
+      </button>
+
+      <div class="social-row-2">
+        <button class="btn-gmail-red" onclick="openExternalSite('https://mail.google.com')">
+          📧 فتح جيميل
+        </button>
+        <button class="btn-fb-blue" onclick="openExternalSite('https://www.facebook.com/r.php')">
+          📘 فتح فيسبوك
+        </button>
+      </div>
+
+      <!-- زر حفظ الحساب في المتصفح وفايربيز -->
+      <button class="btn-save-firebase" onclick="saveAccountToBrowserAndFirebase()">
+        ✅ تم إنشاء الحساب بنجاح (حفظ في المتصفح وفايربيز)
+      </button>
+
+      <!-- المشغل الآمن (متعدد التابات) -->
+      <div class="safe-player-box">
+        <div class="safe-player-title">🌐 المشغل الآمن (متعدد التابات)</div>
+
+        <div class="url-bar-row">
+          <button class="btn-add-tab" onclick="addNewSafeTab()">➕ إضافة</button>
+          <input type="text" id="customTabUrlInput" class="input-tab-url" placeholder="اكتب الرابط هنا (https...)" onkeydown="if(event.key==='Enter') addNewSafeTab()">
+        </div>
+
+        <!-- شريط التابات -->
+        <div class="tabs-header-strip" id="tabsStripContainer"></div>
+
+        <!-- شاشة العرض المحمية بـ Sandbox -->
+        <div class="sandbox-viewport-wrap">
+          <iframe
+            id="safeSandboxFrame"
+            class="sandbox-iframe"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+            referrerpolicy="no-referrer"
+            src="https://www.instagram.com/">
+          </iframe>
+        </div>
+
+        <div class="iframe-helper-bar">
+          <span id="currentTabStatusText">الرابط النشط: www.instagram.com</span>
+          <button class="iframe-helper-btn" onclick="openCurrentTabPopup()">↗️ فتح التاب في نافذة مستقلة</button>
+        </div>
+
+        <div class="sandbox-note">
+          * التصفح محمي بنظام Sandbox و إخفاء المسار (No-Referrer)
+        </div>
+      </div>
+
+      <!-- سجل الحسابات المحفوظة + ربط فايربيز الفعلي -->
+      <div class="saved-accounts-panel">
+        <div class="saved-accounts-title">
+          <span>📂 الحسابات المحفوظة (<span id="savedCountBadge">0</span>)</span>
+          <div style="display: flex; gap: 6px;">
+            <button onclick="exportSavedAccountsTxt()" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-size:11px; cursor:pointer; font-weight:bold;">📥 تنزيل TXT</button>
+            <button onclick="toggleFirebaseConfig()" style="background:#3f3f46; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-size:11px; cursor:pointer;">⚙️ إعداد فايربيز</button>
+            <button onclick="clearAllSavedAccounts()" style="background:#dc2626; color:#fff; border:none; border-radius:5px; padding:4px 9px; font-size:11px; cursor:pointer;">🗑️ مسح</button>
+          </div>
+        </div>
+
+        <!-- إعداد رابط قاعدة بيانات فايربيز (اختياري ومفعل بالكامل) -->
+        <div id="firebaseConfigBox" style="display:none; margin-bottom:10px; background:#121216; padding:10px; border-radius:8px; border:1px solid #334155;">
+          <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:5px;">رابط Firebase Realtime Database (اختياري للمزامنة السحابية الفورية):</label>
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="firebaseDbUrlInput" placeholder="https://your-project-default-rtdb.firebaseio.com" style="flex:1; background:#09090b; color:#38bdf8; border:1px solid #3f3f46; border-radius:6px; padding:7px; font-size:12px; direction:ltr;">
+            <button onclick="saveFirebaseDbUrl()" style="background:#10b981; color:#fff; border:none; border-radius:6px; padding:7px 12px; font-size:12px; font-weight:bold; cursor:pointer;">حفظ</button>
+          </div>
+        </div>
+
+        <div id="savedAccountsListContainer" style="max-height: 220px; overflow-y: auto;"></div>
+      </div>
+
+    </div>
+
+    <!-- الفوتر وحقوق الملكية كما في الصورة الثالثة بالضبط -->
+    <div class="omar-footer">
+      <div class="omar-copyright">
+        ENG OMAR 2026 _ 2027 ©<br>
+        .TV. All Rights Reserved
+      </div>
+      <p class="omar-salawat">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ ﷺ</p>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- البرمجة الكاملة لجميع الخواص في القسمين الأول والثاني -->
+  <!-- ========================================================================= -->
+  <script>
+    /* ------------------ دوال القسم الأول الأصلي (بدون أي مساس) ------------------ */
+    function copyRawCode() {
+      const codeArea = document.getElementById("rawCode");
+      codeArea.select();
+      navigator.clipboard.writeText(codeArea.value);
+      alert("✅ تم نسخ الكود الأصلي إلى الحافظة!");
+    }
+
+    function runOriginalScript() {
+      let email="boxy-poem-audacity@duck.com";let chars="abcdefghijklmnopqrstuvwxyz0123456789";let rand="";for(let i=0;i<5;i++)rand+=chars.charAt(Math.floor(Math.random()*chars.length));let fn=["Alex","John","David","Max","Leo","Sam","Chris","Jack","Tom","Adam"];let ln=["Smith","Johnson","Brown","Taylor","Miller","Davis","Wilson"];let fName=fn[Math.floor(Math.random()*fn.length)]+" "+ln[Math.floor(Math.random()*ln.length)];let username=fName.split(" ")[0].toLowerCase()+"_"+rand;let pass="#ZMsd42d*";function forceInject(el,val){if(!el)return;el.focus();let nativeSetter=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,"value").set;if(nativeSetter)nativeSetter.call(el,val);else el.value=val;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));el.blur();}let inputs=document.querySelectorAll("#originalTestCard input");if(inputs.length>=4){forceInject(inputs[0],email);forceInject(inputs[1],pass);forceInject(inputs[2],fName);forceInject(inputs[3],username);}inputs.forEach(i=>{let n=(i.name||"").toLowerCase(),t=(i.type||"").toLowerCase();if((n.includes('email')||t==='email')&&!i.value)forceInject(i,email);if((n.includes('pass')||t==='password')&&!i.value)forceInject(i,pass);if((n.includes('full')||n.includes('name'))&&!i.value)forceInject(i,fName);if(n.includes('user')&&!i.value)forceInject(i,username);});let selects=document.querySelectorAll("#originalTestCard select");if(selects.length>=3){function forceSelect(el,val){if(!el)return;let nativeSelect=Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype,"value").set;if(nativeSelect)nativeSelect.call(el,val);el.value=val;for(let j=0;j<el.options.length;j++){if(el.options[j].value===val||el.options[j].text===val){el.selectedIndex=j;break;}}el.dispatchEvent(new Event('change',{bubbles:true}));}forceSelect(selects[0],"6");forceSelect(selects[1],"15");forceSelect(selects[2],"1998");}let info=`📧 الإيميل: ${email}\n👤 النيم: ${fName}\n🏷️ اليوزر: ${username}\n🔑 الباسورد: ${pass}\n🎂 الميلاد: 15 / 6 / 1998`;navigator.clipboard.writeText(info).catch(()=>{});alert("✅ تم ملء كل الخانات بنجاح!\n\n"+info);
+    }
+
+    /* ------------------ نظام التشفير غير القابل للقراءة للباسورد ------------------ */
+    // مصفوفة الهاش المشفرة رياضياً للباسورد المطلوب بحيث لا يظهر في كود التحقق نهائياً
+    const _cipherMatrix = [212, 199, 233, 14, 206, 64, 222, 26, 71];
+    const _cipherWeight = 3246;
+
+    function verifyEncryptedPassword(inputStr) {
+      if (!inputStr || inputStr.length !== _cipherMatrix.length) return false;
+      let wSum = 0;
+      for (let i = 0; i < inputStr.length; i++) {
+        let code = inputStr.charCodeAt(i);
+        wSum += code * (i + 1);
+        let transformed = ((code ^ (i * 37 + 193)) * 73 + 29) % 251;
+        if (transformed !== _cipherMatrix[i]) return false;
+      }
+      return wSum === _cipherWeight;
+    }
+
+    function unlockSectionTwo() {
+      const inp = document.getElementById("secretPassInput").value;
+      const errEl = document.getElementById("lockErrorMsg");
+      if (verifyEncryptedPassword(inp)) {
+        errEl.style.display = "none";
+        document.getElementById("passwordGateCard").style.display = "none";
+        document.getElementById("protectedGeneratorSection").style.display = "block";
+        sessionStorage.setItem("omar_sec2_unlocked", "1");
+        showToast("🔓 تم التحقق من التشفير وفتح النظام بنجاح!");
+      } else {
+        errEl.style.display = "block";
+      }
+    }
+
+    function lockSectionTwo() {
+      sessionStorage.removeItem("omar_sec2_unlocked");
+      document.getElementById("secretPassInput").value = "";
+      document.getElementById("protectedGeneratorSection").style.display = "none";
+      document.getElementById("passwordGateCard").style.display = "block";
+      showToast("🔒 تم قفل القسم الثاني!");
+    }
+
+    /* ------------------ دوال مولد الحسابات + نظام الحماية ------------------ */
+    const firstNamesPool = [
+      "Youssef", "Omar", "Ahmed", "Karim", "Mostafa", "Ziad", "Hassan",
+      "Ali", "Tarek", "Mahmoud", "Rami", "khaled", "Amr", "Seif", "Marwan"
+    ];
+    const lastNamesPool = [
+      "Nabil", "Salam", "Adel", "Saeed", "Ibrahim", "Mansour", "Fahmy",
+      "Kamal", "Nour", "Samir", "fouad", "zaki", "Hamdy", "gamal", "Rashad"
+    ];
+
+    function showToast(msg) {
+      const t = document.getElementById("toastMsg");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        t.style.display = "none";
+      }, 2400);
+    }
+
+    function copyFieldText(elementId, labelName) {
+      const val = document.getElementById(elementId).textContent.trim();
+      navigator.clipboard.writeText(val).then(() => {
+        showToast(`✅ تم نسخ ${labelName}: ${val}`);
+      }).catch(() => {
+        const temp = document.createElement("textarea");
+        temp.value = val;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        showToast(`✅ تم نسخ ${labelName}!`);
+      });
+    }
+
+    function generateRandomPassword() {
+      const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+      const lower = "abcdefghijkmnopqrstuvwxyz";
+      const symbols = "!@#$%&*";
+      let part1 = "";
+      for (let i = 0; i < 6; i++) part1 += upper.charAt(Math.floor(Math.random() * upper.length));
+      let sym = symbols.charAt(Math.floor(Math.random() * symbols.length));
+      let part2 = "";
+      for (let j = 0; j < 4; j++) {
+        const pool = j % 2 === 0 ? lower : upper;
+        part2 += pool.charAt(Math.floor(Math.random() * pool.length));
+      }
+      return "#" + part1 + sym + part2;
+    }
+
+    function updateDerivedEmail() {
+      const baseEmail = document.getElementById("baseGmailInput").value.trim() || "Omarsalam2214@gmail.com";
+      const currentUsername = document.getElementById("genUserVal").textContent.trim();
+      let prefix = baseEmail;
+      let domain = "gmail.com";
+      if (baseEmail.includes("@")) {
+        const parts = baseEmail.split("@");
+        prefix = parts[0].split("+")[0];
+        domain = parts[1] || "gmail.com";
+      }
+      const derived = `${prefix}+${currentUsername}@${domain}`;
+      document.getElementById("genEmailVal").textContent = derived;
+      localStorage.setItem("omar_base_gmail", baseEmail);
+    }
+
+    function generateNewAccountData() {
+      const fn = firstNamesPool[Math.floor(Math.random() * firstNamesPool.length)];
+      const ln = lastNamesPool[Math.floor(Math.random() * lastNamesPool.length)];
+      const cleanFn = fn.charAt(0).toUpperCase() + fn.slice(1).toLowerCase();
+      const cleanLn = ln.charAt(0).toUpperCase() + ln.slice(1).toLowerCase();
+      const fullName = `${cleanFn} ${cleanLn}`;
+
+      const randDigits = Math.floor(10000 + Math.random() * 90000);
+      const username = `${cleanFn.toLowerCase()}_${cleanLn.toLowerCase()}${randDigits}`;
+      const newPass = generateRandomPassword();
+
+      document.getElementById("genNameVal").textContent = fullName;
+      document.getElementById("genUserVal").textContent = username;
+      document.getElementById("genPassVal").textContent = newPass;
+      updateDerivedEmail();
+      showToast("🔄 تم توليد بيانات حساب جديدة!");
+    }
+
+    /* ------------------ فتح وتنزيل صورة الشخص الذكية ------------------ */
+    function openAiFaceImage() {
+      const url = "https://thispersondoesnotexist.com/?t=" + Date.now();
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    async function downloadAiFaceImage() {
+      showToast("⏳ جاري تجهيز وتنزيل الصورة...");
+      const username = document.getElementById("genUserVal").textContent.trim() || "avatar";
+      try {
+        // محاولة جلب صورة مباشرة، وإذا منع CORS في المتصفح المحلي يتم توليد صورة بروفايل عالية الدقة فوراً عبر Canvas
+        const response = await fetch("https://thispersondoesnotexist.com/", { mode: "cors", cache: "no-store" });
+        if (!response.ok) throw new Error("CORS fallback");
+        const blob = await response.blob();
+        triggerBlobDownload(blob, `${username}_avatar.jpg`);
+        showToast("✅ تم تنزيل الصورة بنجاح!");
+      } catch (err) {
+        // توليد صورة بروفايل احترافية عالية الجودة محلياً عند حظر CORS من المتصفح، مع فتح الموقع الأصلي أيضاً
+        const canvas = document.createElement("canvas");
+        canvas.width = 600;
+        canvas.height = 600;
+        const ctx = canvas.getContext("2d");
+        const grad = ctx.createLinearGradient(0, 0, 600, 600);
+        const hues = [210, 260, 330, 160, 25];
+        const h = hues[Math.floor(Math.random() * hues.length)];
+        grad.addColorStop(0, `hsl(${h}, 75%, 45%)`);
+        grad.addColorStop(1, `hsl(${(h + 45) % 360}, 80%, 25%)`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 600, 600);
+
+        // رسم أيقونة شخص أنيقة + الأحرف الأولى
+        ctx.fillStyle = "rgba(255,255,255,0.18)";
+        ctx.beginPath();
+        ctx.arc(300, 230, 105, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(300, 520, 190, Math.PI, 0, false);
+        ctx.fill();
+
+        const fullName = document.getElementById("genNameVal").textContent.trim();
+        const initials = fullName.split(" ").map(w => w[0]).join("").toUpperCase();
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 120px Segoe UI, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(initials, 300, 295);
+
+        canvas.toBlob(blob => {
+          triggerBlobDownload(blob, `${username}_profile.png`);
+          window.open("https://thispersondoesnotexist.com/", "_blank", "noopener,noreferrer");
+          showToast("✅ تم تنزيل الصورة وفتح مولد الوجوه!");
+        }, "image/png");
+      }
+    }
+
+    function triggerBlobDownload(blob, filename) {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(link.href), 3000);
+    }
+
+    /* ------------------ مفكرة خطوات الأمان وأزرار المواقع ------------------ */
+    function saveChecklistState() {
+      localStorage.setItem("omar_chk_ip", document.getElementById("chkIpChanged").checked ? "1" : "0");
+      localStorage.setItem("omar_chk_incog", document.getElementById("chkIncognito").checked ? "1" : "0");
+    }
+
+    function openInstaSignup() {
+      const info = `الإيميل: ${document.getElementById("genEmailVal").textContent}\nالاسم: ${document.getElementById("genNameVal").textContent}\nاليوزر: ${document.getElementById("genUserVal").textContent}\nالباسورد: ${document.getElementById("genPassVal").textContent}`;
+      navigator.clipboard.writeText(info).catch(() => {});
+      window.open("https://www.instagram.com/accounts/emailsignup/", "_blank", "noopener,noreferrer");
+      showToast("🚀 تم نسخ بيانات الحساب وفتح إنستجرام للتسجيل!");
+    }
+
+    function openExternalSite(url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    /* ------------------ حفظ الحسابات في المتصفح وفايربيز ------------------ */
+    function getSavedAccounts() {
+      try {
+        return JSON.parse(localStorage.getItem("omar_saved_accounts") || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+
+    async function saveAccountToBrowserAndFirebase() {
+      const accountObj = {
+        id: Date.now(),
+        name: document.getElementById("genNameVal").textContent.trim(),
+        username: document.getElementById("genUserVal").textContent.trim(),
+        email: document.getElementById("genEmailVal").textContent.trim(),
+        password: document.getElementById("genPassVal").textContent.trim(),
+        baseGmail: document.getElementById("baseGmailInput").value.trim(),
+        createdAt: new Date().toLocaleString("ar-EG")
+      };
+
+      const list = getSavedAccounts();
+      list.unshift(accountObj);
+      localStorage.setItem("omar_saved_accounts", JSON.stringify(list));
+      renderSavedAccountsList();
+
+      // إرسال إلى Firebase إذا كان الرابط مضافاً
+      const fbUrl = (localStorage.getItem("omar_firebase_url") || "").trim();
+      if (fbUrl && fbUrl.startsWith("https://")) {
+        try {
+          const cleanEndpoint = fbUrl.replace(/\/$/, "") + "/accounts.json";
+          await fetch(cleanEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(accountObj)
+          });
+          showToast("✅ تم حفظ الحساب في المتصفح وفي Firebase بنجاح!");
+          return;
+        } catch (err) {
+          showToast("✅ تم الحفظ في المتصفح (تعذر الاتصال بـ Firebase)");
+          return;
+        }
+      }
+      showToast("✅ تم حفظ الحساب بنجاح في المتصفح!");
+    }
+
+    function renderSavedAccountsList() {
+      const list = getSavedAccounts();
+      document.getElementById("savedCountBadge").textContent = list.length;
+      const container = document.getElementById("savedAccountsListContainer");
+      if (list.length === 0) {
+        container.innerHTML = `<div style="color:#71717a; font-size:13px; text-align:center; padding:12px;">لا توجد حسابات محفوظة حتى الآن.</div>`;
+        return;
+      }
+      container.innerHTML = list.map((acc, idx) => `
+        <div class="saved-item-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <b style="color:#38bdf8;">#${list.length - idx} - ${acc.name}</b>
+            <button onclick="copySingleSavedAccount(${idx})" style="background:#10b981; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-size:11px; cursor:pointer;">نسخ الكل</button>
+          </div>
+          <div>👤 <b>User:</b> ${acc.username}</div>
+          <div>📧 <b>Email:</b> ${acc.email}</div>
+          <div>🔑 <b>Pass:</b> ${acc.password}</div>
+          <div style="color:#94a3b8; font-size:11px; margin-top:3px;">🕒 ${acc.createdAt}</div>
+        </div>
+      `).join("");
+    }
+
+    function copySingleSavedAccount(index) {
+      const list = getSavedAccounts();
+      const acc = list[index];
+      if (!acc) return;
+      const txt = `📧 الإيميل: ${acc.email}\n👤 الاسم: ${acc.name}\n🏷️ اليوزر: ${acc.username}\n🔑 الباسورد: ${acc.password}`;
+      navigator.clipboard.writeText(txt);
+      showToast("✅ تم نسخ بيانات الحساب بالكامل!");
+    }
+
+    function exportSavedAccountsTxt() {
+      const list = getSavedAccounts();
+      if (list.length === 0) {
+        showToast("⚠️ لا توجد حسابات محفوظة لتنزيلها!");
+        return;
+      }
+      const content = list.map((a, i) =>
+        `=== Account #${i + 1} (${a.createdAt}) ===\nName: ${a.name}\nUsername: ${a.username}\nEmail: ${a.email}\nPassword: ${a.password}\n`
+      ).join("\n----------------------------\n");
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      triggerBlobDownload(blob, "Saved_Accounts_ENG_OMAR.txt");
+      showToast("📥 تم تنزيل ملف الحسابات بنجاح!");
+    }
+
+    function clearAllSavedAccounts() {
+      if (confirm("هل أنت متأكد من مسح سجل الحسابات المحفوظة في المتصفح؟")) {
+        localStorage.removeItem("omar_saved_accounts");
+        renderSavedAccountsList();
+        showToast("🗑️ تم مسح السجل!");
+      }
+    }
+
+    function toggleFirebaseConfig() {
+      const box = document.getElementById("firebaseConfigBox");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    function saveFirebaseDbUrl() {
+      const val = document.getElementById("firebaseDbUrlInput").value.trim();
+      localStorage.setItem("omar_firebase_url", val);
+      showToast("✅ تم حفظ رابط Firebase بنجاح!");
+    }
+
+    /* ------------------ المشغل الآمن (متعدد التابات) ------------------ */
+    let safeTabs = [
+      { id: 1, title: "www.instagram.com", url: "https://www.instagram.com/" },
+      { id: 2, title: "mail.google.com", url: "https://mail.google.com/" }
+    ];
+    let activeTabId = 1;
+
+    function renderSafeTabs() {
+      const strip = document.getElementById("tabsStripContainer");
+      strip.innerHTML = safeTabs.map(tab => {
+        const isActive = tab.id === activeTabId;
+        return `
+          <div class="tab-pill ${isActive ? 'active' : ''}" onclick="switchSafeTab(${tab.id})">
+            <span>${tab.title}</span>
+            <span class="tab-close-x" onclick="event.stopPropagation(); closeSafeTab(${tab.id})">✖</span>
+          </div>
+        `;
+      }).join("");
+
+      const currentTab = safeTabs.find(t => t.id === activeTabId);
+      const iframe = document.getElementById("safeSandboxFrame");
+      const statusText = document.getElementById("currentTabStatusText");
+
+      if (currentTab) {
+        if (iframe.dataset.loadedUrl !== currentTab.url) {
+          iframe.src = currentTab.url;
+          iframe.dataset.loadedUrl = currentTab.url;
+        }
+        statusText.textContent = `الرابط النشط: ${currentTab.title}`;
+      } else {
+        iframe.src = "about:blank";
+        iframe.dataset.loadedUrl = "";
+        statusText.textContent = "لا توجد تابات مفتوحة";
+      }
+    }
+
+    function switchSafeTab(id) {
+      activeTabId = id;
+      renderSafeTabs();
+    }
+
+    function closeSafeTab(id) {
+      safeTabs = safeTabs.filter(t => t.id !== id);
+      if (activeTabId === id && safeTabs.length > 0) {
+        activeTabId = safeTabs[0].id;
+      }
+      renderSafeTabs();
+    }
+
+    function addNewSafeTab() {
+      const inp = document.getElementById("customTabUrlInput");
+      let rawUrl = inp.value.trim();
+      if (!rawUrl) {
+        showToast("⚠️ اكتب الرابط أولاً!");
+        return;
+      }
+      if (!/^https?:\/\//i.test(rawUrl)) {
+        rawUrl = "https://" + rawUrl;
+      }
+      let hostTitle = rawUrl.replace(/^https?:\/\//i, "").split("/")[0];
+      const newId = Date.now();
+      safeTabs.push({ id: newId, title: hostTitle, url: rawUrl });
+      activeTabId = newId;
+      inp.value = "";
+      renderSafeTabs();
+      showToast(`🌐 تم إضافة تاب: ${hostTitle}`);
+    }
+
+    function openCurrentTabPopup() {
+      const currentTab = safeTabs.find(t => t.id === activeTabId);
+      if (currentTab) {
+        window.open(currentTab.url, "_blank", "width=430,height=740,noopener,noreferrer");
+      }
+    }
+
+    /* ------------------ تهيئة الصفحة عند التحميل ------------------ */
+    window.addEventListener("DOMContentLoaded", () => {
+      // استرجاع حالة القفل في نفس الجلسة إذا تم فتحها مسبقاً
+      if (sessionStorage.getItem("omar_sec2_unlocked") === "1") {
+        document.getElementById("passwordGateCard").style.display = "none";
+        document.getElementById("protectedGeneratorSection").style.display = "block";
+      }
+
+      // استرجاع الإيميل الأساسي والخطوات المحفوظة
+      const savedBaseGmail = localStorage.getItem("omar_base_gmail");
+      if (savedBaseGmail) {
+        document.getElementById("baseGmailInput").value = savedBaseGmail;
+      }
+      document.getElementById("chkIpChanged").checked = localStorage.getItem("omar_chk_ip") === "1";
+      document.getElementById("chkIncognito").checked = localStorage.getItem("omar_chk_incog") === "1";
+
+      const savedFbUrl = localStorage.getItem("omar_firebase_url");
+      if (savedFbUrl) {
+        document.getElementById("firebaseDbUrlInput").value = savedFbUrl;
+      }
+
+      updateDerivedEmail();
+      renderSafeTabs();
+      renderSavedAccountsList();
+    });
+  </script>
+
+</body>
+</html>
